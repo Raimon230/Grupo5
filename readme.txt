@@ -1,1 +1,1 @@
-Dia 16/11/2023: Hemos instalado el Jango en la maquina virtual, la hemos exportado al onedrive para que la tengan todos los integrantes del grupo, hemos hecho un HTML vacio y Didac ha terminado el portfolio
+Dia 16/11/2023: Hemos instalado el Jango en la maquina virtual, la hemos exportado al onedrive para que la tengan todos los integrantes del grupo, hemos hecho un HTML vacio para poner en el jango, hemos buscado informacion sobre los mockups y Didac ha terminado el portfolio
