@@ -1,1 +1,6 @@
 Dia 16/11/2023: Hemos instalado el Jango en la maquina virtual, la hemos exportado al onedrive para que la tengan todos los integrantes del grupo, hemos hecho un HTML vacio para poner en el jango, hemos buscado informacion sobre los mockups y Didac ha terminado el portfolio.
+Dia 20/11/2023 - 24/11/2023: Seguimos con la creacion del servidor web, nos estuvo costando mucho, estuvimos viendo videos y siguiendo la guia oficial del django (Dani y Didac).
+Dia 27/11/2023 - 30/11/2023: Tuvimos que volver hacer la creacio del servidor web porque hicimos tres proyectos... Mientras que Adrian proseguia con la creacion de los mockups, Didac seguia con django y Dani lo estuvo apoyando.
+Dia 4/12/2023 5/12/2023: Al nos empezaban a salir bien las cosas e hicimos una prueba con un html y el dia 4/12 estuvimos todo el dia para que funcionase y no pudimos PERO el dia 5/12 en la hora que teniamos podimos solucionar los errores principales
+11/12/2023 - 15/12/2023: Durante estaba semana estuvimos implementando el mockup de inicio de sesion/crear cuenta, que los CSS, JS, PNG no nos cargaban y estuvimos pidiendo ayuda al Xavi y Pablo, tambien creamos el HTML/PHP de subir archivos, cuando creamos la cuenta nos redirije al HTML de subir archivos. Aun no conseguimos que los suba correctamente pero poco a poco
+18/12/2023: Hemos añadido CSS en el "subir archivos"
