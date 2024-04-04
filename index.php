@@ -49,9 +49,13 @@ function iniciarSesion($email, $password) {
             return true;
         } else {
             echo "La contraseña no coincide"; // Mensaje de depuración
+            $conn->close();
+            ob_end_flush();
         }
     } else {
         echo "El usuario no existe"; // Mensaje de depuración
+        $conn->close();
+        ob_end_flush();
     }
 
     return false;
@@ -72,6 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Error en el registro, mostrar mensaje de error
             echo "Error al registrar el usuario: " . $conn->error;
+            $conn->close();
+            ob_end_flush();
         }
     } elseif (isset($_POST['login'])) {
         // Procesar inicio de sesión
@@ -82,6 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Error en el inicio de sesión, mostrar mensaje de error
             echo "Inicio de sesión fallido. Verifica tu correo y contraseña.";
+            $conn->close();
+            ob_end_flush();
         }
     }
 }
@@ -106,11 +114,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         form {
-            background-color: white;
+            background-color: #fff;
             border: 1px solid #ccc;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
         }
 
         input {
@@ -118,26 +128,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px;
             margin-bottom: 10px;
             box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         button {
             width: 100%;
             padding: 10px;
-            background-color: #4caf50;
+            background-color: #ff6f61; /* Color fuerte */
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #e96c5f; /* Color fuerte más oscuro en hover */
         }
 
         hr {
             margin: 20px 0;
             border: none;
             border-top: 1px solid #ddd;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
         }
     </style>
 </head>
@@ -165,8 +183,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
+  
 
-<?php
-$conn->close();
-ob_end_flush();
-?>
