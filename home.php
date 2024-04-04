@@ -17,6 +17,10 @@ if (isset($_POST['logout'])) {
 
 // Verificar si el usuario es un administrador
 $is_admin = isset($_SESSION['email']) && $_SESSION['email'] === 'a@a.com';
+
+// Verificar si el usuario es un usuario registrado
+$is_registered_user = isset($_SESSION['email']);
+
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +83,12 @@ $is_admin = isset($_SESSION['email']) && $_SESSION['email'] === 'a@a.com';
 <?php if ($is_admin): ?>
     <form action="admin.php" method="post">
         <button type="submit">Admin</button>
+    </form>
+<?php endif; ?>
+
+<?php if ($is_registered_user): ?>
+    <form action="virustotal.php" method="post">
+        <button type="submit">VirusTotal</button>
     </form>
 <?php endif; ?>
 
