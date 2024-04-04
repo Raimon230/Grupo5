@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['email'] !== 'a@a.com') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
+    <title>Admin Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,50 +21,75 @@ if (!isset($_SESSION['user_id']) || $_SESSION['email'] !== 'a@a.com') {
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
         }
 
-        form {
-            background-color: white;
-            border: 1px solid #ccc;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        button {
+        nav {
+            background-color: #333;
             width: 100%;
-            padding: 10px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
+            padding: 10px 0;
         }
 
-        button:hover {
-            background-color: #45a049;
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #ccc;
         }
 
         h1 {
             text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<!-- Contenido HTML aquí -->
+<nav>
+    <ul>
+        <li><a href="usuarios.php">Usuarios</a></li> <!-- Cambiado el href aquí -->
+        <li><a href="#Grupos">Grupos</a></li>
+        <li><a href="#settings">Configuración</a></li>
+        <li><a href="home.php">Salir</a></li>
+    </ul>
+</nav>
 
-<h1>Página de Administrador</h1>
+<h1>Panel de Administración</h1>
 
-<form action="home.php" method="post">
-    <button type="submit" name="back">Back</button>
-</form>
+<!-- Contenido de usuarios -->
+<section id="users">
+    <h2>Usuarios</h2>
+    <!-- Aquí puedes mostrar la lista de usuarios, editar o eliminar usuarios, etc. -->
+</section>
 
-<!-- Más contenido HTML aquí -->
+<!-- Contenido de productos -->
+<section id="Grupos">
+    <h2>Grupos</h2>
+    <!-- Aquí puedes mostrar la lista de productos, agregar nuevos productos, editar o eliminar productos, etc. -->
+</section>
+
+<!-- Contenido de configuración -->
+<section id="settings">
+    <h2>Configuración</h2>
+    <!-- Aquí puedes mostrar las opciones de configuración del sistema, ajustes de cuenta, etc. -->
+</section>
 
 </body>
 </html>
