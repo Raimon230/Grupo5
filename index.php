@@ -20,15 +20,14 @@ function verificarSesion() {
     }
 }
 
-
-function registrarUsuario($email, $password) {
+function registrarUsuario($email, $password, $grupo) {
     global $conn;
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     $email = mysqli_real_escape_string($conn, $email);
 
-    $query = "INSERT INTO usuarios (email, password) VALUES ('$email', '$hashedPassword')";
+    $query = "INSERT INTO usuarios (email, password, grupo) VALUES ('$email', '$hashedPassword', '$grupo')";
     return $conn->query($query);
 }
 
@@ -42,7 +41,6 @@ function iniciarSesion($email, $password) {
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        var_dump($row); // Verificar qué datos se están obteniendo
         if (password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['ID'];
             $_SESSION['email'] = $row['email'];
@@ -66,10 +64,11 @@ verificarSesion();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $grupo = $_POST['grupo']; // Nuevo campo para el grupo
 
     if (isset($_POST['registro'])) {
         // Procesar registro
-        if (registrarUsuario($email, $password)) {
+        if (registrarUsuario($email, $password, $grupo)) {
             // Registro exitoso, redirigir a home.php
             header("Location: home.php");
             exit();
@@ -132,6 +131,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 4px;
         }
 
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
         button {
             width: 100%;
             padding: 10px;
@@ -167,6 +175,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Registro</h2>
     <input type="email" name="email" placeholder="Correo Electrónico" required>
     <input type="password" name="password" placeholder="Contraseña" required>
+    <select name="grupo" required> <!-- Nuevo campo para el grupo -->
+        <option value="administracion">Administración</option>
+        <option value="produccion">Producción</option>
+        <option value="envio">Envío</option>
+        <!-- Agrega más opciones según sea necesario -->
+    </select>
     <button type="submit" name="registro">Registrarse</button>
 </form>
 
@@ -183,5 +197,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-  
-
