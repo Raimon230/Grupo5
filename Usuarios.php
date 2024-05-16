@@ -1,7 +1,15 @@
 <?php
-ob_start();
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php?error=unauthorized");
+    exit();
+}
+
+// Conexión a la base de datos
 define('DB_HOST', 'localhost');
 define('DB_USER', 'a');
 define('DB_PASS', 'a');
@@ -13,20 +21,14 @@ if ($conn->connect_error) {
     die("Error de conexión a la base de datos: " . $conn->connect_error);
 }
 
-function verificarSesion() {
-    if (isset($_SESSION['user_id']) && isset($_SESSION['email']) && $_SESSION['email'] === 'a@a.com') {
-        header("Location: home.php");
-        exit();  // Agregamos exit() después de la redirección
-    }
-}
+// Consulta para obtener la lista de usuarios con sus grupos
+$sql = "SELECT id, email, grupo FROM usuarios";
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php?error=unauthorized");
-    exit();
-}
+$result = $conn->query($sql);
 
-// Consulta para obtener la lista de usuarios
-$sql = "SELECT id, username, email FROM usuarios";
+if (!$result) {
+    die("Error en la consulta: " . $conn->error);
+}
 
 ?>
 
@@ -82,9 +84,48 @@ $sql = "SELECT id, username, email FROM usuarios";
             margin-top: 20px;
         }
 
-        .welcome {
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            background-color: #d9ead3;
+        }
+
+        th {
+            background-color: #5f9ea0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .cancel-button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 8px 16px;
             text-align: center;
-            margin-bottom: 20px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .cancel-button:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -92,36 +133,88 @@ $sql = "SELECT id, username, email FROM usuarios";
 
 <nav>
     <ul>
-        <li><a href="#profile">Perfil</a></li>
-        <li><a href="#orders">Grupos</a></li>
-        <li><a href="#settings">Configuración</a></li>
-        <li><a href="index.php">Salir</a></li>
+        <li><a href="usuarios.php">Usuarios</a></li>
+        <li><a href="grupos.php">Grupos</a></li>
+        <li><a href="configuracion.php">Configuración</a></li>
+        <li><a href="home.php">Salir</a></li>
     </ul>
 </nav>
 
 <h1>Panel de Usuario</h1>
 
 <div class="welcome">
-    <p>Bienvenido, <?php echo $_SESSION['usuarios']; ?>!</p>
+    <p>Bienvenido, Admin</p>
 </div>
 
-<!-- Contenido del perfil del usuario -->
-<section id="profile">
-    <h2>Perfil</h2>
-    <!-- Aquí puedes mostrar la información del perfil del usuario, como nombre, correo electrónico, etc. -->
+<!-- Lista de usuarios -->
+<section>
+    <h2>Lista de Usuarios</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Grupo</th>
+            <th>Acción</th>
+        </tr>
+        <?php
+        // Mostrar los usuarios obtenidos de la base de datos
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $row["id"] . "</td>";
+                echo "<td>" . $row["email"] . "</td>";
+                echo "<td>" . $row["grupo"] . "</td>";
+                echo "<td>";
+                echo "<button class='cancel-button' data-user-id='" . $row["id"] . "'>Eliminar</button>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='4'>No hay usuarios registrados.</td></tr>";
+        }
+        ?>
+    </table>
 </section>
 
-<!-- Contenido de las órdenes del usuario -->
-<section id="Grupos">
-    <h2>Grupos</h2>
-    <!-- Aquí puedes mostrar la lista de órdenes del usuario, historial de compras, etc. -->
-</section>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Obtener todos los botones "Cancelar"
+    var cancelButtons = document.querySelectorAll(".cancel-button");
 
-<!-- Contenido de la configuración del usuario -->
-<section id="settings">
-    <h2>Configuración</h2>
-    <!-- Aquí puedes mostrar opciones de configuración para el usuario, como cambiar contraseña, ajustes de cuenta, etc. -->
-</section>
+    // Agregar un evento de clic a cada botón
+    cancelButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            // Obtener el ID del usuario asociado con el botón
+            var userId = button.getAttribute("data-user-id");
 
+            // Mostrar la ventana de confirmación
+            var confirmDelete = confirm("¿Seguro que quieres eliminar este usuario?");
+
+            // Si el usuario confirma la eliminación, enviar una solicitud al servidor
+            if (confirmDelete) {
+                // Enviar una solicitud POST a eliminar_usuarios.php
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "eliminar_usuarios.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.responseText); // Mostrar la respuesta del servidor en la consola
+                        if (xhr.responseText === "success") {
+                            // Éxito en la eliminación
+                            // Eliminar la fila de la tabla correspondiente al usuario eliminado
+                            button.closest("tr").remove();
+                        } else {
+                            // Error en la eliminación
+                            alert("Error al eliminar el usuario.");
+                        }
+                    }
+                };
+                xhr.send("user_id=" + userId);
+
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
