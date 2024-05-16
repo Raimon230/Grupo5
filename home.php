@@ -20,6 +20,8 @@ $is_admin = isset($_SESSION['email']) && $_SESSION['email'] === 'a@a.com';
 
 // Verificar si el usuario es un usuario registrado
 $is_registered_user = isset($_SESSION['email']);
+$sql = "SELECT id, username, email, grupo FROM usuarios WHERE id = {$_SESSION['user_id']}";
+
 
 ?>
 
