@@ -12,4 +12,13 @@ Dia 4/12/2023 5/12/2023: Al nos empezaban a salir bien las cosas e hicimos una p
 05/02/2024: Estuvimos haciendo los .php 
 12/02/2024: Estuvimos haciendo la base de datos y arreglando el codigo de virustotal.
 19/02/2024: Arreglamos errores de todos los codigos.
-
+26/02/2024:Empezamos con la creacion de tablas de la base de datos y aplicandolas al php.
+04/03/2024: Editamos el codigo de virustotal y nos empezo a fallar y no lo pudimos arreglar, estuvimos toda la semana intentanto que funcionase.
+11/03/2024: Empezamos a crear la presentacion del proyecto e hicimos un poco de la memoria (capturas y hablar de como la estructurariamos).
+18/03/2024: Durante esta semana estuvimos con la presentacion y haciendo la parte en ingles, aparte de esto estuvimos intentando que funcione el virustotal.
+25/03/2024: Terminamos la presentacion e hicimos la exposicion.
+01/04/2024: Semana santa.
+08/04/2024: Estuvimos durante la semana haciendo pequeños cambios per necesarios: boton para regresar atras, crear otra tabla de la base de datos,crear las configuraciones de admin, etc...
+15/04/2024: Estuvimos aplicando los estilos a los cambios de la semana pasada
+22/04/2024:
+29/04/2024:
