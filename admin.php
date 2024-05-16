@@ -64,32 +64,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['email'] !== 'a@a.com') {
 
 <nav>
     <ul>
-        <li><a href="usuarios.php">Usuarios</a></li> <!-- Cambiado el href aquí -->
-        <li><a href="#Grupos">Grupos</a></li>
-        <li><a href="#settings">Configuración</a></li>
+        <li><a href="usuarios.php">Usuarios</a></li>
+        <li><a href="grupos.php">Grupos</a></li>
+        <li><a href="configuracion.php">Configuración</a></li>
         <li><a href="home.php">Salir</a></li>
     </ul>
 </nav>
 
 <h1>Panel de Administración</h1>
-
-<!-- Contenido de usuarios -->
-<section id="users">
-    <h2>Usuarios</h2>
-    <!-- Aquí puedes mostrar la lista de usuarios, editar o eliminar usuarios, etc. -->
-</section>
-
-<!-- Contenido de productos -->
-<section id="Grupos">
-    <h2>Grupos</h2>
-    <!-- Aquí puedes mostrar la lista de productos, agregar nuevos productos, editar o eliminar productos, etc. -->
-</section>
-
-<!-- Contenido de configuración -->
-<section id="settings">
-    <h2>Configuración</h2>
-    <!-- Aquí puedes mostrar las opciones de configuración del sistema, ajustes de cuenta, etc. -->
-</section>
 
 </body>
 </html>
