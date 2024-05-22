@@ -187,6 +187,8 @@ document.addEventListener("DOMContentLoaded", function() {
             // Obtener el ID del usuario asociado con el botón
             var userId = button.getAttribute("data-user-id");
 
+            console.log("Usuario a eliminar:", userId); // Debug: Mostrar ID del usuario a eliminar
+
             // Mostrar la ventana de confirmación
             var confirmDelete = confirm("¿Seguro que quieres eliminar este usuario?");
 
@@ -197,20 +199,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 xhr.open("POST", "eliminar_usuarios.php", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText); // Mostrar la respuesta del servidor en la consola
-                        if (xhr.responseText === "success") {
+                    if (xhr.readyState === 4) {
+                        console.log("Estado:", xhr.status); // Debug: Mostrar estado de la solicitud
+                        console.log("Respuesta:", xhr.responseText); // Debug: Mostrar respuesta del servidor
+                        if (xhr.status === 200 && xhr.responseText.trim() === "success") { // Verificar la respuesta y quitar espacios
                             // Éxito en la eliminación
                             // Eliminar la fila de la tabla correspondiente al usuario eliminado
                             button.closest("tr").remove();
                         } else {
                             // Error en la eliminación
-                            alert("Error al eliminar el usuario.");
+                            alert("Error al eliminar el usuario: " + xhr.responseText);
                         }
                     }
                 };
-                xhr.send("user_id=" + userId);
-
+                xhr.send("user_id=" + encodeURIComponent(userId));
             }
         });
     });
