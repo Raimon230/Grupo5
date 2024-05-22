@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
 // Verificar si el usuario está autenticado
@@ -20,9 +23,68 @@ $is_admin = isset($_SESSION['email']) && $_SESSION['email'] === 'a@a.com';
 
 // Verificar si el usuario es un usuario registrado
 $is_registered_user = isset($_SESSION['email']);
-$sql = "SELECT id, username, email, grupo FROM usuarios WHERE id = {$_SESSION['user_id']}";
 
+// Conexión a la base de datos
+$servername = "localhost";
+$username = "a";  // Actualiza con tu usuario de base de datos
+$password = "a";  // Actualiza con tu contraseña de base de datos
+$dbname = "a";  // Actualiza con el nombre de tu base de datos
 
+// Crear la conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar la conexión
+if ($conn->connect_error) {
+    die(" fallida: " . $conn->connect_error);
+}
+
+// Obtener el grupo del usuario autenticado
+$user_id = $_SESSION['user_id'];
+$sql_group = "SELECT grupo FROM usuarios WHERE id = ?";
+$stmt_group = $conn->prepare($sql_group);
+$stmt_group->bind_param("i", $user_id);
+$stmt_group->execute();
+$result_group = $stmt_group->get_result();
+$group_row = $result_group->fetch_assoc();
+$user_group = $group_row['grupo'];
+
+$stmt_group->close();
+
+// Obtener los usuarios del mismo grupo
+$sql = "SELECT id, email FROM usuarios WHERE grupo = ? AND id != ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("si", $user_group, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$users = [];
+$user_options = '';
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+        $user_options .= '<option value="' . $row['id'] . '">' . $row['email'] . '</option>';
+    }
+}
+
+$stmt->close();
+
+// Obtener los archivos subidos para el usuario autenticado
+$sql_files = "SELECT id, archivo FROM registros_virustotal WHERE user_id = ?";
+$stmt_files = $conn->prepare($sql_files);
+$stmt_files->bind_param("i", $user_id);
+$stmt_files->execute();
+$result_files = $stmt_files->get_result();
+
+$files = [];
+if ($result_files->num_rows > 0) {
+    while ($row = $result_files->fetch_assoc()) {
+        $files[] = $row;
+    }
+}
+
+$stmt_files->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +103,21 @@ $sql = "SELECT id, username, email, grupo FROM usuarios WHERE id = {$_SESSION['u
             justify-content: center;
             align-items: center;
             height: 100vh;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
         }
 
         form {
@@ -70,11 +147,13 @@ $sql = "SELECT id, username, email, grupo FROM usuarios WHERE id = {$_SESSION['u
         h1 {
             text-align: center;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-
-<!-- Contenido HTML aquí -->
 
 <h1>Bienvenido a la página de inicio</h1>
 
@@ -92,9 +171,32 @@ $sql = "SELECT id, username, email, grupo FROM usuarios WHERE id = {$_SESSION['u
     <form action="virustotal.php" method="post">
         <button type="submit">VirusTotal</button>
     </form>
+    <button type="button" onclick="toggleFileUploadForm()">Subir Archivo</button>
+
+    <div id="fileUploadForm" class="hidden">
+        <form action="upload.php" method="post" enctype="multipart/form-data" class="file-upload-form">
+            <label for="file">Seleccionar archivo:</label>
+            <input type="file" name="file" id="file" required>
+            <label for="user">Seleccionar usuario:</label>
+            <select name="user" id="user" required>
+                <?php echo $user_options; ?>
+            </select>
+            <button type="submit">Subir</button>
+        </form>
+    </div>
+
+    <h2>Archivos Subidos</h2>
+    <form action="archivos_subidos.php" method="post">
+        <button type="submit">Archivos Subidos</button>
+    </form>
 <?php endif; ?>
 
-<!-- Más contenido HTML aquí -->
+<script>
+function toggleFileUploadForm() {
+    const form = document.getElementById('fileUploadForm');
+    form.classList.toggle('hidden');
+}
+</script>
 
 </body>
 </html>
