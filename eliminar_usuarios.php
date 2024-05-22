@@ -1,5 +1,7 @@
 <?php
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['user_id'])) {
     // Conexión a la base de datos
@@ -15,27 +17,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['user_id'])) {
     }
 
     // Obtener el ID del usuario a eliminar
-    $user_id = $_POST['user_id'];
+    $user_id = intval($_POST['user_id']); // Asegurarse de que user_id es un número entero
 
-    // Consulta SQL para eliminar el usuario de la tabla usuarios
-    $delete_user_sql = "DELETE FROM usuarios WHERE ID = ?";
-    $stmt_delete_user = $conn->prepare($delete_user_sql);
-    $stmt_delete_user->bind_param("i", $user_id);
+    // Iniciar transacción
+    $conn->begin_transaction();
 
-    // Ejecutar la consulta para eliminar el usuario de la tabla usuarios
-    if ($stmt_delete_user->execute()) {
+    try {
+        // Eliminar registros asociados en registros_virustotal
+        $delete_related_sql = "DELETE FROM registros_virustotal WHERE user_id = ?";
+        $stmt_delete_related = $conn->prepare($delete_related_sql);
+        $stmt_delete_related->bind_param("i", $user_id);
+        $stmt_delete_related->execute();
+
+        // Eliminar el usuario de la tabla usuarios
+        $delete_user_sql = "DELETE FROM usuarios WHERE id = ?";
+        $stmt_delete_user = $conn->prepare($delete_user_sql);
+        $stmt_delete_user->bind_param("i", $user_id);
+        $stmt_delete_user->execute();
+
+        // Confirmar transacción
+        $conn->commit();
+
         // Éxito en la eliminación
         echo "success";
-    } else {
-        // Error al eliminar el usuario
-        echo "error_delete_user: " . $stmt_delete_user->error;
+    } catch (Exception $e) {
+        // Deshacer transacción
+        $conn->rollback();
+
+        // Error al eliminar el usuario o los registros asociados
+        echo "error_delete_user: " . $e->getMessage();
     }
 
     // Cerrar la conexión
+    $stmt_delete_related->close();
+    $stmt_delete_user->close();
     $conn->close();
 } else {
-    // Si no se reciben los datos del usuario, redirigir a la página de inicio
-    header("Location: index.php");
-    exit();
+    echo "Invalid request.";
 }
 ?>
